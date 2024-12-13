@@ -1,5 +1,8 @@
 node_modules/
 /test-results/
+/test-html-junit/
+/test-junit-report/
+/allure-results/
 /playwright-report/
 /blob-report/
 /playwright/.cache/
