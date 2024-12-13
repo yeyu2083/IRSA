@@ -27,6 +27,7 @@
   },
   "dependencies": {
     "allure-playwright": "3.0.7",
+    "dotenv": "16.4.7",
     "lodash": "4.17.21"
   }
 }
