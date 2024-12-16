@@ -1,5 +1,6 @@
 import { test, expect } from '@playwright/test';
 import { APIRequestContext } from '@playwright/test';
+import { config } from 'dotenv';
 
 test.describe('BancoController Tests', () => {
     let apiContext: APIRequestContext;
