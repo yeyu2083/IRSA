@@ -1,12 +1,15 @@
 import { test, expect } from '@playwright/test';
 import { APIRequestContext } from '@playwright/test';
-
+import { config } from 'dotenv'
 test.describe('AdquirientesController Tests', () => {
     let apiContext: APIRequestContext;
+    let baseUrl;
 
     test.beforeAll(async ({ playwright }) => {
+        config();
+        baseUrl = process.env.BASE_URL || 'https://irsa-dev-backend.wi-soft.net/api/v1/';
         apiContext = await playwright.request.newContext({
-            baseURL: process.env.API_BASE_URL || 'https://irsa-dev-backend.wi-soft.net/api/v1/',
+            baseURL: baseUrl,
             extraHTTPHeaders: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'
@@ -19,7 +22,7 @@ test.describe('AdquirientesController Tests', () => {
     });
 
     test('should list adquirientes successfully', async () => {
-        const response = await apiContext.get('Adquirientes');
+        const response = await apiContext.get(baseUrl + '/Adquirientes');
         expect(response.ok()).toBeTruthy();
         expect(response.status()).toBe(200);
         
