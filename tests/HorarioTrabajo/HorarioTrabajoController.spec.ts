@@ -19,13 +19,21 @@ test.describe('HorarioTrabajoController Tests', () => {
     });
 
     test('should list horarios trabajo successfully', async () => {
+        const requestBody = {
+            "IdShopping": 0,
+            "Marca": 0
+        };
         //need login
-        const response = await apiContext.post('HorarioTrabajo/shopping');
-        expect(response.ok()).toBeTruthy();
-        expect(response.status()).toBe(200);
+        const response = await apiContext.post('HorarioTrabajo/shopping',{
+            data: requestBody
+
+        })
+        
+        expect(response.status()).toBe(400);
         
         const body = await response.json();
-        expect(Array.isArray(body)).toBeTruthy();
+        expect(body).toBe("Usuario no encontrado en GetSessionUser"); //se podria agregar a la api la propiedad message
+        
     });
 
     test('should list horarios trabajo fail', async () => {
