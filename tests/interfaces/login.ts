@@ -1,4 +1,5 @@
 export interface LoginData {
-    usuario: string;
-    password: string;
+    CUIT: string;
+    Username: string;
+    Password: string;
   }

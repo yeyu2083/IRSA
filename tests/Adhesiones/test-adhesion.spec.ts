@@ -1,11 +1,34 @@
-import { test, expect } from '@playwright/test';
+import { test, APIRequestContext } from '@playwright/test';
+import { TestTools } from '../../Utils/TestTools';
+import { LoginData } from '../interfaces/login';
 
-test('Página de ejemplo tiene el título correcto', async ({ page }) => {
-  // Navega a una página de ejemplo
-  await page.goto('https://example.com');
 
-  // Verifica que el título sea correcto
-  const title = await page.title();
-  expect(title).toBe('Example Domain');
+
+
+
+
+
+
+test('login test', async ({ request: apiRequest }: { request: APIRequestContext })=>{
+    
+
+const testTools = new TestTools(apiRequest) 
+    
+    const credentials: LoginData = {
+        CUIT: '30702637895',
+        Username: 'LASBLONDASS.A.',
+        Password: '654321'
+    };
+
+    const login = await testTools.post('https://irsa-dev-backend.wi-soft.net/api/v1/Login/login', credentials);
+    const response = await login.json();
+    console.log(response);
+  
+    // const testTools = new TestTools(apiRequest);
+    // // const response = await testTools.apiPost('/Login/login', {
+    // //     headers: {
+    // //         'Authorization': `Bearer ${token}`
+    // //     }
+    // });
+    
 });
-
