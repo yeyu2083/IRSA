@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "test:ui": "npx playwright test --ui",
-    "test:ci": "npx playwright test",
+    "test": "npx playwright test",
     "regression:ci": "npx playwright test --workers=1",
     "allure:gen:chrome": "allure generate --clean -o allure-report/chrome",
     "allure": "allure generate --clean",
@@ -23,11 +23,10 @@
     "eslint": "9.16.0",
     "globals": "15.13.0",
     "prettier": "3.4.2",
-    "typescript-eslint": "8.18.0"
-  },
-  "dependencies": {
+    "typescript-eslint": "8.18.0", 
     "allure-playwright": "3.0.7",
     "dotenv": "16.4.7",
     "lodash": "4.17.21"
   }
+  
 }

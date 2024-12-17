@@ -1,39 +1,41 @@
 import { APIRequestContext } from "@playwright/test";
-import {config} from 'dotenv';
-import { LoginData } from "../tests/interfaces/login";
-import {TokenStore} from '../Utils/token-store';
-
-
+import { config } from "dotenv";
+import { LoginDataInterno } from "../tests/interfaces/login";
 
 config();
+
 export class TestTools {
-     api: APIRequestContext;
-     url: string;
-    
+    public api: APIRequestContext;
+    public url: string;
+    private token: string;
+
     constructor(api: APIRequestContext) {
         this.api = api;
-        this.url = process.env.BASE_URL ?? '';
-        
+        this.url = process.env.BASE_URL ?? "";
+        this.token = '';
     }
-    async post(url: string, body:LoginData) {
-        const response = await this.api.post(url, {
-            data:body,
+
+    async login(credentials: LoginDataInterno) {
+        const response = await this.api.post(`${this.url}/Login/login`, {
+            data: credentials,
             headers: {
-                'Content-Type': 'application/json',
-               
+                "Content-Type": "application/json"
             }
         });
-        return response;
-    
-    }
-    async get(url: string) {
-        const response = await this.api.get(url, {
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${TokenStore.getToken()}`
-            }
-        });
+
+        const responseData = await response.json();
+        this.token = responseData.AccessToken; // Cambiado de data.token a AccessToken
         return response;
     }
 
-}       
+    async postInterno(url: string, body?: LoginDataInterno) {
+        const response = await this.api.post(url, {
+            data: body,
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${this.token}`
+            }
+        });
+        return response;
+    }
+}
