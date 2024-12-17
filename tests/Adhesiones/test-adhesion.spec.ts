@@ -1,62 +1,58 @@
 import { test, expect } from '@playwright/test';
 import { TestTools } from '../../Utils/TestTools';
 import { LoginDataInterno } from '../interfaces/login';
-import { TokenStore } from '../../Utils/token-store';
-
-
 
 test.describe('API Tests', () => {
     let testTools: TestTools;
-    const baseUrl = 'https://irsa-dev-backend.wi-soft.net/api/v1';
+    const baseUrl = process.env.BASE_URL || 'https://irsa-dev-backend.wi-soft.net/api/v1';
+    
+    const credentials: LoginDataInterno = {
+        Username: 'asapconsulting',
+        Password: 'Inicio.2025'
+    };
 
-    test.beforeAll(async ({ request }) => {
+    test.beforeEach(async ({ request }) => {
         testTools = new TestTools(request);
-        await performLogin(testTools);
     });
 
-    async function performLogin(testTools: TestTools): Promise<void> {
-        const credentials: LoginDataInterno = {
-            Username: 'asapconsulting',
-            Password: 'Inicio.2025'
-        };
-        const login = await testTools.loginPostInterno(`${baseUrl}/Login/login`, credentials);
-        const response = await login.json();
-        TokenStore.setToken(response.AccessToken);
-    }
-
-    test('Login', async ({ request }) => {
-        const testTools = new TestTools(request);
-        const credentials: LoginDataInterno = {
-            Username: 'asapconsulting',
-            Password: 'Inicio.2025'
-        };
-
-        const login = await testTools.loginPostInterno(`${baseUrl}/Login/login`, credentials);
-        const response = await login.json();
+    test('Debería realizar login exitosamente', async () => {
+        const loginResponse = await testTools.login(credentials);
+        expect(loginResponse.status()).toBe(200);
         
-        expect(login.status()).toBe(200);
-        TokenStore.setToken(response.AccessToken);
-        expect(TokenStore.getToken()).toBeTruthy();
+        const responseData = await loginResponse.json();
+        expect(responseData.AccessToken).toBeDefined();
+        
+        console.log('Login exitoso');
+        console.log ('Token:', responseData.AccessToken);
+    });
+    test('no debería permitir login con credenciales inválidas', async () => {
+        const invalidCredentials = 
+        { Username: 'usuario_invalido',
+          Password: 'clave_invalida'
+     };
+        const loginResponse = await testTools.login(invalidCredentials);
+        const responseData = await loginResponse.json();
+        expect(loginResponse.status()).toBe(500);
+        expect(loginResponse.ok()).toBe(false);
 
-        console.log('Token almacenado en el almacenamiento local:', TokenStore.getToken());
-        console.log('Login exitoso:', response);
+        expect(responseData).toMatchObject({
+            StatusCode: 500,
+            Message: "An error occurred while processing your request.",
+            Details: expect.stringContaining("Error en login FWS: ( STATUS: Unauthorized")
+        });
+        
+       
+     
     });
 
-    test('debería devolver error al intentar listar marcas sin body', async ({ request }) => {
-        const testTools = new TestTools(request);
+    test('No debería listar marcas', async () => {
         
-        const token = TokenStore.getToken();
-        console.log('Este es el token dentro del test', token);
         
-        const marcas = await testTools.postInterno(`${baseUrl}/Marcas/Listar`);
-        const response = await marcas.json();
+        const marcasResponse = await testTools.api.post (`${baseUrl}/Marcas/Listar`);
+        expect(marcasResponse.status()).toBe(400);
         
-        expect(marcas.status()).toBe(200);
-        console.log(response);
+        const marcasData = await marcasResponse.json();
+        expect(marcasData).toEqual("No se pudieron listar las marcas.");
+        
     });
 });
-
-
-
-
-
