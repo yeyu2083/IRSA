@@ -1,27 +1,22 @@
 import { test, expect } from '@playwright/test';
-import { APIRequestContext } from '@playwright/test';
-import { config } from 'dotenv';
+import { TestTools } from '../../Utils/TestTools';
+import { LoginDataInterno } from '../interfaces/login';
 
-test.describe('BancoController Tests', () => {
-    let apiContext: APIRequestContext;
-    const baseUrl = process.env.API_BASE_URL || 'https://irsa-dev-backend.wi-soft.net/api/v1/'; // Adjust port as needed
+test.describe('Banco Tests', () => {
+    let testTools: TestTools;
+    const baseUrl = process.env.BASE_URL || 'https://irsa-dev-backend.wi-soft.net/api/v1';
+    
+    const credentials: LoginDataInterno = {
+        Username: 'asapconsulting',
+        Password: 'Inicio.2025'
+    };
 
-    test.beforeAll(async ({ playwright }) => {
-        apiContext = await playwright.request.newContext({
-            baseURL: baseUrl,
-            extraHTTPHeaders: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            }
-        });
+    test.beforeEach(async ({ request }) => {
+        testTools = new TestTools(request);
     });
 
-    test.afterAll(async () => {
-        await apiContext.dispose();
-    });
-
-    test('should get all bancos successfully', async () => {
-        const response = await apiContext.get('banco');
+    test('Listar todos los bancos correctamente', async () => {
+        const response = await testTools.api.get(baseUrl + '/banco');
         expect(response.ok()).toBeTruthy();
         expect(response.status()).toBe(200);
         

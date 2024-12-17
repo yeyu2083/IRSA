@@ -1,28 +1,22 @@
 import { test, expect } from '@playwright/test';
-import { APIRequestContext } from '@playwright/test';
-import { config } from 'dotenv'
-test.describe('AdquirientesController Tests', () => {
-    let apiContext: APIRequestContext;
-    let baseUrl;
+import { TestTools } from '../../Utils/TestTools';
+import { LoginDataInterno } from '../interfaces/login';
 
-    test.beforeAll(async ({ playwright }) => {
-        config();
-        baseUrl = process.env.BASE_URL || 'https://irsa-dev-backend.wi-soft.net/api/v1/';
-        apiContext = await playwright.request.newContext({
-            baseURL: baseUrl,
-            extraHTTPHeaders: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            }
-        });
+test.describe('Adquirientes Tests', () => {
+    let testTools: TestTools;
+    const baseUrl = process.env.BASE_URL || 'https://irsa-dev-backend.wi-soft.net/api/v1';
+    
+    const credentials: LoginDataInterno = {
+        Username: 'asapconsulting',
+        Password: 'Inicio.2025'
+    };
+
+    test.beforeEach(async ({ request }) => {
+        testTools = new TestTools(request);
     });
 
-    test.afterAll(async () => {
-        await apiContext.dispose();
-    });
-
-    test('should list adquirientes successfully', async () => {
-        const response = await apiContext.get(baseUrl + '/Adquirientes');
+    test('Listar adquirientes correctamente', async () => {
+        const response = await testTools.api.get(baseUrl + '/Adquirientes');
         expect(response.ok()).toBeTruthy();
         expect(response.status()).toBe(200);
         

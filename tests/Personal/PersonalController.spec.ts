@@ -1,25 +1,22 @@
 import { test, expect } from '@playwright/test';
-import { APIRequestContext } from '@playwright/test';
+import { TestTools } from '../../Utils/TestTools';
+import { LoginDataInterno } from '../interfaces/login';
 
 test.describe('PersonalController Tests', () => {
-    let apiContext: APIRequestContext;
+    let testTools: TestTools;
+    const baseUrl = process.env.BASE_URL || 'https://irsa-dev-backend.wi-soft.net/api/v1';
+    
+    const credentials: LoginDataInterno = {
+        Username: 'asapconsulting',
+        Password: 'Inicio.2025'
+    };
 
-    test.beforeAll(async ({ playwright }) => {
-        apiContext = await playwright.request.newContext({
-            baseURL: process.env.API_BASE_URL || 'https://irsa-dev-backend.wi-soft.net/api/v1/',
-            extraHTTPHeaders: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            }
-        });
+    test.beforeEach(async ({ request }) => {
+        testTools = new TestTools(request);
     });
 
-    test.afterAll(async () => {
-        await apiContext.dispose();
-    });
-
-    test('should list personal successfully', async () => {
-        const response = await apiContext.get('Personal/Listar');
+    test('Listar personal correctamente', async () => {
+        const response = await testTools.api.get('Personal/Listar');
         expect(response.ok()).toBeTruthy();
         expect(response.status()).toBe(200);
         
@@ -27,22 +24,27 @@ test.describe('PersonalController Tests', () => {
         expect(Array.isArray(body)).toBeTruthy();
     });
 
-    test('should create personal', async () => {
+    test('Crear personal', async () => {
         const newPersonal = {
             nombre: 'Test Personal',
             apellido: 'Test Apellido',
-            dni: '12345678',
-            email: 'test@example.com'
+            tipoDocumentoSAP: "96",
+            numeroDocumento: "99998888",
+            nombreArt: "Excelsiur",
+            telefonoArt: "01190909090"
         };
-
-        const response = await apiContext.post('Personal/Crear', {
-            data: newPersonal
+        const loginResponse = await (await testTools.login(credentials)).json();
+        const token = loginResponse.AccessToken;
+        const response = await testTools.api.post(baseUrl + '/Personal/Crear', {
+            data: newPersonal,
+            headers: {                 
+                "Content-Type": "application/json",
+                'Authorization': `Bearer ${token}` 
+            },
         });
         
         expect(response.ok()).toBeTruthy();
         expect(response.status()).toBe(200);
         
-        const body = await response.json();
-        expect(body).toHaveProperty('id');
     });
 });

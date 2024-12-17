@@ -1,59 +1,55 @@
 import { test, expect } from '@playwright/test';
-import { APIRequestContext } from '@playwright/test';
-import { config } from 'dotenv';
+import { TestTools } from '../../Utils/TestTools';
+import { LoginDataInterno } from '../interfaces/login';
 
-test.describe('HorarioTrabajoController Tests', () => {
-    let apiContext: APIRequestContext;
-    let baseUrl;
+test.describe('HorarioTrabajo Tests', () => {
+    let testTools: TestTools;
+    const baseUrl = process.env.BASE_URL || 'https://irsa-dev-backend.wi-soft.net/api/v1';
     
-    test.beforeAll(async ({ playwright }) => {
-        config();
-        baseUrl = process.env.BASE_URL || 'https://irsa-dev-backend.wi-soft.net/api/v1/';
-        apiContext = await playwright.request.newContext({
-            baseURL: baseUrl,
-            extraHTTPHeaders: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            }
-        });
+    const credentials: LoginDataInterno = {
+        Username: 'asapconsulting',
+        Password: 'Inicio.2025'
+    };
+
+    test.beforeEach(async ({ request }) => {
+        testTools = new TestTools(request);
     });
 
-    test.afterAll(async () => {
-        await apiContext.dispose();
-    });
-
-    test('should list horarios trabajo successfully', async () => {
+    test('Listar horarios de trabajo correctamente', async () => {
         const requestBody = {
-            "IdShopping": 0,
+            "IdShopping": 52379,
             "Marca": 0
         };
-        //need login
-        const response = await apiContext.post(baseUrl + '/HorarioTrabajo/shopping',{
+        const loginResponse = await (await testTools.login(credentials)).json();
+        const token = loginResponse.AccessToken;
+        const response = await testTools.api.post(baseUrl + '/HorarioTrabajo/shopping',
+        {
+            headers: {                 
+                "Content-Type": "application/json",
+                'Authorization': `Bearer ${token}` 
+            },
             data: requestBody
-
-        })
-        
+        });
         expect(response.status()).toBe(200);
         
         const body = await response.json();
-        expect(body).toBe("Usuario no encontrado en GetSessionUser"); //se podria agregar a la api la propiedad message
+        expect(body).toBeTruthy();
         
     });
 
-    test('should list horarios trabajo fail', async () => {
-        //need login
-        
-        const response = await apiContext.post(baseUrl + '/HorarioTrabajo/shopping', {
-            data: {
-                "IdShopping": 0,
-                "Marca": 0
-            }
+    test('List horarios de trabajo fallando', async () => {
+        const requestBody = {
+            "IdShopping": 0,
+            "Marca": 0
+        };        
+        const response = await testTools.api.post(baseUrl + '/HorarioTrabajo/shopping', {
+            data: requestBody
         });
-        //expect(response.ok()).toBeFalsy();
+        
         expect(response.status()).toBe(400);
         
         const body = await response.json();
         expect(body).toBeTruthy();
-        //expect(Array.isArray(body)).toBeTruthy();
+        
     });
 });

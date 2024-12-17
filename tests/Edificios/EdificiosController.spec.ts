@@ -1,29 +1,22 @@
 import { test, expect } from '@playwright/test';
-import { APIRequestContext } from '@playwright/test';
-import { config } from 'dotenv';
+import { TestTools } from '../../Utils/TestTools';
+import { LoginDataInterno } from '../interfaces/login';
 
 test.describe('EdificiosController Tests', () => {
-    let apiContext: APIRequestContext;
-    let baseUrl;
+    let testTools: TestTools;
+    const baseUrl = process.env.BASE_URL || 'https://irsa-dev-backend.wi-soft.net/api/v1';
+    
+    const credentials: LoginDataInterno = {
+        Username: 'asapconsulting',
+        Password: 'Inicio.2025'
+    };
 
-    test.beforeAll(async ({ playwright }) => {
-        config();
-        baseUrl = process.env.API_BASE_URL || 'https://irsa-dev-backend.wi-soft.net/api/v1/';
-        apiContext = await playwright.request.newContext({
-            baseURL: baseUrl,
-            extraHTTPHeaders: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            }
-        });
-    });
-
-    test.afterAll(async () => {
-        await apiContext.dispose();
+    test.beforeEach(async ({ request }) => {
+        testTools = new TestTools(request);
     });
 
     test('should list edificios successfully', async () => {
-        const response = await apiContext.get(baseUrl + 'Edificios/Listar');
+        const response = await testTools.api.get(baseUrl + '/Edificios/Listar');
         expect(response.ok()).toBeTruthy();
         expect(response.status()).toBe(200);
         
