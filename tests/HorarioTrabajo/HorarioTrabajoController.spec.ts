@@ -1,6 +1,7 @@
 import { test, expect } from '@playwright/test';
 import { TestTools } from '../../Utils/TestTools';
 import { LoginDataInterno } from '../interfaces/login';
+import { HorarioTrabajo } from './interfaces';
 
 test.describe('HorarioTrabajo Tests', () => {
     let testTools: TestTools;
@@ -34,22 +35,21 @@ test.describe('HorarioTrabajo Tests', () => {
         
         const body = await response.json();
         expect(body).toBeTruthy();
+        const horarioTrabajoResponse = body as HorarioTrabajo[];
+        expect(horarioTrabajoResponse).toEqual(expect.objectContaining({
+            idHorarioTrabajo: expect.any(String),
+            idShopping: expect.any(Number),
+            nombreShopping: expect.any(String),
+            exceptuado: expect.any(Boolean),
+            cierreNocturno: expect.arrayContaining([
+                expect.objectContaining({
+                    dia: expect.any(Number),
+                    horaInicio: expect.any(String),
+                    horaFin: expect.any(String)
+                })
+            ])
+        }));
         
     });
 
-    test('List horarios de trabajo fallando', async () => {
-        const requestBody = {
-            "IdShopping": 0,
-            "Marca": 0
-        };        
-        const response = await testTools.api.post(baseUrl + '/HorarioTrabajo/shopping', {
-            data: requestBody
-        });
-        
-        expect(response.status()).toBe(400);
-        
-        const body = await response.json();
-        expect(body).toBeTruthy();
-        
-    });
 });

@@ -1,15 +1,10 @@
 import { test, expect } from '@playwright/test';
 import { TestTools } from '../../Utils/TestTools';
-import { LoginDataInterno } from '../interfaces/login';
+import { Adquiriente } from './intefaces';
 
 test.describe('Adquirientes Tests', () => {
     let testTools: TestTools;
     const baseUrl = process.env.BASE_URL || 'https://irsa-dev-backend.wi-soft.net/api/v1';
-    
-    const credentials: LoginDataInterno = {
-        Username: 'asapconsulting',
-        Password: 'Inicio.2025'
-    };
 
     test.beforeEach(async ({ request }) => {
         testTools = new TestTools(request);
@@ -22,5 +17,10 @@ test.describe('Adquirientes Tests', () => {
         
         const body = await response.json();
         expect(Array.isArray(body)).toBeTruthy();
+        const adquirienteResponse = body as Adquiriente[];
+        expect(adquirienteResponse[0]).toEqual(expect.objectContaining({
+            id: expect.any(String),
+            nombre: expect.any(String)
+        }));
     });
 });

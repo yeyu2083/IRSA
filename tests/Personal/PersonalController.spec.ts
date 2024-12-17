@@ -1,6 +1,7 @@
 import { test, expect } from '@playwright/test';
 import { TestTools } from '../../Utils/TestTools';
 import { LoginDataInterno } from '../interfaces/login';
+import { Personal } from './interfaces';
 
 test.describe('PersonalController Tests', () => {
     let testTools: TestTools;
@@ -16,12 +17,22 @@ test.describe('PersonalController Tests', () => {
     });
 
     test('Listar personal correctamente', async () => {
-        const response = await testTools.api.get('Personal/Listar');
+        const response = await testTools.api.get(baseUrl + '/Personal/Listar');
         expect(response.ok()).toBeTruthy();
         expect(response.status()).toBe(200);
         
         const body = await response.json();
         expect(Array.isArray(body)).toBeTruthy();
+        const personalResponse = body as Personal[];
+        expect(personalResponse[0]).toEqual(expect.objectContaining({
+            nombre: expect.any(String),
+            apellido: expect.any(String),
+            tipoDocumentoSAP: expect.any(String),
+            tipoDocumento: expect.any(String),
+            numeroDocumento: expect.any(String),
+            nombreArt: expect.any(String),
+            telefonoArt: expect.any(String)
+        }));
     });
 
     test('Crear personal', async () => {
