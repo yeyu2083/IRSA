@@ -7,7 +7,7 @@ config();
 export class TestTools {
     public api: APIRequestContext;
     public url: string;
-    private token: string;
+    public token: string;
 
     constructor(api: APIRequestContext) {
         this.api = api;

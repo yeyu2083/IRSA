@@ -54,7 +54,12 @@ interface PromocionPayload {
     IdSubRubros: string[];
     IdTarjetas: string[];
     AutoHomologar: boolean;
-    Descuentos: Descuento[];
+    Descuentos: Array<{
+        Descuento: number;
+        IdRubros: string[];
+        IdSubRubros: string[];
+        IdShoppings: number[];
+    }>;
 }
 
 export { Banco, Tarjeta, Shopping, Rubro, Subrubro, Descuento, PromocionPayload };
