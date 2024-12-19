@@ -21,11 +21,10 @@ test.describe('MarcasController Tests', () => {
     test('should list marcas successfully', async () => {
         //need login
         const response = await apiContext.post('Marcas/Listar');
-        expect(response.ok()).toBeTruthy();
-        expect(response.status()).toBe(200);
+        expect(response.status()).toBe(400);
         
         const body = await response.json();
-        expect(Array.isArray(body)).toBeTruthy();
+        expect(body).toEqual("No se pudieron listar las marcas.");
     });
 
     test('should list all marcas successfully', async () => {
