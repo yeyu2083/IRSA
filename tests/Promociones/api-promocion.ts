@@ -57,7 +57,7 @@ export class ApiPromocionBancaria {
 
    
     async crearPromocion(payload: PromocionPayload) {
-        console.log('Payload a enviar:', JSON.stringify(payload, null, 2));
+        //console.log('Payload a enviar:', JSON.stringify(payload, null, 2));
         const formData = new FormData();
 
         // Datos básicos
@@ -98,10 +98,12 @@ export class ApiPromocionBancaria {
             }
         );
 
-        const responseBody = await response.text();
-        console.log('Response Body:', responseBody);
+       
+        return {
+            status: response.status(),
+            data: await response.json()
+        };
 
-        expect(response.status()).toBe(200);
-        return responseBody;
+     ;
     }
 }
