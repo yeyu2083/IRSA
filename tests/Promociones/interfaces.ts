@@ -37,7 +37,7 @@ interface Descuento {
     Descuento: number;
 }
 
-interface PromocionPayload {
+interface basePayload {
     Nombre: string;
     Descripcion: string;
     FechaDesdeAdhesion: string;
@@ -62,4 +62,4 @@ interface PromocionPayload {
     }>;
 }
 
-export { Banco, Tarjeta, Shopping, Rubro, Subrubro, Descuento, PromocionPayload };
+export { Banco, Tarjeta, Shopping, Rubro, Subrubro, Descuento, basePayload };
