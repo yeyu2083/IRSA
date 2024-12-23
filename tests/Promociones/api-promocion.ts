@@ -3,7 +3,7 @@ import { config } from "dotenv";
 import { expect } from "@playwright/test";
 import { LoginDataInterno } from "../interfaces/login";
 
-import  { Banco, Shopping, Rubro, Subrubro, PromocionPayload } from "./interfaces";
+import  { Banco, Shopping, Rubro, Subrubro, basePayload } from "./interfaces";
 
 config();
 
@@ -56,7 +56,7 @@ export class ApiPromocionBancaria {
     }
 
    
-    async crearPromocion(payload: PromocionPayload) {
+    async crearPromocion(payload: basePayload) {
         //console.log('Payload a enviar:', JSON.stringify(payload, null, 2));
         const formData = new FormData();
 

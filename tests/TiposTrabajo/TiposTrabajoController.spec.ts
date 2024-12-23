@@ -1,16 +1,12 @@
 import { test, expect } from '@playwright/test';
 import { TestTools } from '../../Utils/TestTools';
-import { LoginDataInterno } from '../interfaces/login';
-import { FirmaRequerida, RolesFirmantes, TiposTrabajo, TiposTrabajoById, TiposTrabajoPreAprobacion, Trabajo } from './interfaces';
+import { RolesFirmantes, TiposTrabajo, TiposTrabajoById, Trabajo } from './interfaces';
 
 test.describe('TiposTrabajoController Tests', () => {
     let testTools: TestTools;
     const baseUrl = process.env.BASE_URL || 'https://irsa-dev-backend.wi-soft.net/api/v1';
     
-    const credentials: LoginDataInterno = {
-        Username: 'asapconsulting',
-        Password: 'Inicio.2025'
-    };
+    
 
     test.beforeEach(async ({ request }) => {
         testTools = new TestTools(request);

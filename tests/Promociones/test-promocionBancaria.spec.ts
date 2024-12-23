@@ -3,8 +3,7 @@ import { LoginDataInterno } from '../interfaces/login';
 import{ ApiPromocionBancaria } from './api-promocion';
 import { TestTools } from '../../Utils/TestTools';
 import { PromoCounter } from '../../Utils/promo-counter';
-import { config } from 'dotenv';
-config();   
+ 
 
 test.describe('Promociones Bancarias Tests', () => {
     let testTools: TestTools;
@@ -17,9 +16,9 @@ test.describe('Promociones Bancarias Tests', () => {
     const basePayload = {
         Nombre: "",
         Descripcion: "test",
-        FechaDesdeAdhesion: "2024-12-20T00:00:00",
+        FechaDesdeAdhesion: "2024-12-23T00:00:00",
         FechaHastaAdhesion: "2024-12-31T00:00:00",
-        FechaDesdePromo: "2024-12-20T00:00:00",
+        FechaDesdePromo: "2024-12-23T00:00:00",
         FechaHastaPromo: "2025-01-01T00:00:00",
         Terminos: "",
         URL: "",
@@ -153,9 +152,9 @@ test.describe('Promociones Bancarias Tests', () => {
             ...basePayload,
             Nombre: PromoCounter.getNextName(),
             IdBanco: "79d23353-ec14-4aaa-9612-01a04252cffe",
-            FechaDesdeAdhesion: "2024-12-20T00:00:00",
+            FechaDesdeAdhesion: "2024-12-23T00:00:00",
             FechaHastaAdhesion: "2024-12-01T00:00:00",
-            FechaDesdePromo: "2024-12-20T00:00:00",
+            FechaDesdePromo: "2024-12-23T00:00:00",
             FechaHastaPromo: "2024-01-01T00:00:00",
         };
         const response = await apiPromo.crearPromocion(payload);
