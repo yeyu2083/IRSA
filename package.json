@@ -9,7 +9,7 @@
     "regression:ci": "npx playwright test --workers=1",
     "allure:gen:chrome": "allure generate --clean -o allure-report/chrome",
     "allure": "allure generate --clean",
-    "allure:open": "allure generate --clean && allure open --host localhost --port 8081"
+    "allure:open": "allure generate --clean && allure open --host localhost "
   },
   "keywords": [],
   "author": "",
@@ -29,6 +29,6 @@
     "typescript-eslint": "8.18.0"
   },
   "dependencies": {
-    "@faker-js/faker": "^9.3.0"
+    "@faker-js/faker": "9.3.0"
   }
 }

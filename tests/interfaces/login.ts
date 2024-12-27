@@ -8,3 +8,5 @@ export interface LoginDataLocatario {
     Username: string;
     Password: string;
   }
+  
+ 

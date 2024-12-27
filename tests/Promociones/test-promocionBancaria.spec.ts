@@ -16,9 +16,9 @@ test.describe('Promociones Bancarias Tests', () => {
     const basePayload = {
         Nombre: "",
         Descripcion: "test",
-        FechaDesdeAdhesion: "2024-12-23T00:00:00",
+        FechaDesdeAdhesion: "2024-12-26T00:00:00",
         FechaHastaAdhesion: "2024-12-31T00:00:00",
-        FechaDesdePromo: "2024-12-23T00:00:00",
+        FechaDesdePromo: "2024-12-26T00:00:00",
         FechaHastaPromo: "2025-01-01T00:00:00",
         Terminos: "",
         URL: "",
@@ -160,7 +160,7 @@ test.describe('Promociones Bancarias Tests', () => {
         const response = await apiPromo.crearPromocion(payload);
         expect(response).toBeDefined();
         expect(response.status).toBe(400);
-        expect(response.data).toBe("La fecha hasta de adhesion no puede ser mayor a la fecha hasta de promocion");
+        expect(response.data).toBe("El campo fecha no puede ser menor a la fecha presente");
     });
     
     test('Error al crear promoción con nombre repetido', async () => {
