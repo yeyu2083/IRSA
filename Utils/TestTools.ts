@@ -18,7 +18,7 @@ export class TestTools {
         this.token = '';
     }
    
-    private async logRequestResponse(method: string, url: string, headers: Record<string, string>, body: object | undefined, response: APIResponse) {
+    public async logRequestResponse(method: string, url: string, headers: Record<string, string>, body: object | undefined, response: APIResponse) {
         
         allure.logStep(`${method} ${url}`);
         allure.attachment('Request Headers', JSON.stringify(headers, null, 2), 'application/json');
@@ -61,19 +61,11 @@ export class TestTools {
     //     await this.logRequestResponse(method, url,, body, response);
     //     return response;
     // }
-    async request(method: string, url: string, body?: LoginDataInterno): Promise<APIResponse> {
-        const headers = {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${this.token}`
+    protected getAuthHeaders(): Record<string, string> {
+        return {
+            "Authorization": `Bearer ${this.token}`,
+            "Content-Type": "application/json"
         };
-    
-        const response = await this.api[method.toLowerCase()](url, {
-            data: body,
-            headers
-        });
-    
-        await this.logRequestResponse(method, url, headers, body, response);
-        return response;
     }
 }       
              

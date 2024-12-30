@@ -2,17 +2,19 @@ import { APIRequestContext } from "@playwright/test";
 import { config } from "dotenv";
 import { expect } from "@playwright/test";
 import { LoginDataInterno } from "../interfaces/login";
+import { TestTools } from "../../Utils/TestTools";
 
 import  { Banco, Shopping, Rubro, Subrubro, basePayload } from "./interfaces";
 
 config();
 
-export class ApiPromocionBancaria {
+export class ApiPromocionBancaria extends TestTools {
   
     api: APIRequestContext;
     url: string;
     token: string;
     constructor(api: APIRequestContext) {
+        super(api);
         this.api = api;
         this.url = process.env.BASE_URL ?? "";
         this.token = '';
@@ -33,32 +35,44 @@ export class ApiPromocionBancaria {
     async getBancos(): Promise<Banco[]> {
         const response = await this.api.get(`${this.url}/Banco`);
         expect(response.status()).toBe(200);
-        const data = await response.json();
-        return data;
+        const headers = this.getAuthHeaders();
+        await this.logRequestResponse('GET', this.url, headers, undefined, response);
+        return response.json();
+        
     }
     
     async getShoppings(): Promise<Shopping[]> {
         const response = await this.api.get(`${this.url}/Shopping/listar/dropdown/codigo`);
-        expect(response.ok()).toBeTruthy();
-        return await response.json();
+        expect(response.ok()).toBeTruthy()
+        const headers = this.getAuthHeaders();
+        await this.logRequestResponse('GET', this.url,headers, undefined, response);;
+        return response.json();
     }
 
     async getRubros(): Promise<Rubro[]> {
         const response = await this.api.get(`${this.url}/Rubros`);
         expect(response.ok()).toBeTruthy();
-        return await response.json();
+        const headers = this.getAuthHeaders();
+        await this.logRequestResponse('GET', this.url, headers, undefined, response);
+        return  response.json();
     }
 
     async getSubrubros(): Promise<Subrubro[]> {
         const response = await this.api.get(`${this.url}/Subrubros`);
         expect(response.ok()).toBeTruthy();
-        return await response.json();
+        const headers = this.getAuthHeaders();
+        await this.logRequestResponse('GET', this.url, headers, undefined, response);
+        return response.json();
     }
 
    
     async crearPromocion(payload: basePayload) {
         //console.log('Payload a enviar:', JSON.stringify(payload, null, 2));
         const formData = new FormData();
+        const url = `${this.url}/PromoBancaria`;
+        const headers = {
+            "Authorization": `Bearer ${this.token}`
+        };
 
         // Datos básicos
         Object.entries(payload).forEach(([key, value]) => {
@@ -85,19 +99,14 @@ export class ApiPromocionBancaria {
             });
         });
         
-        const response = await this.api.post( 
-            `${this.url}/PromoBancaria`,
-            {
-                headers: {
-                    "Authorization": `Bearer ${this.token}`,
-                    
-                },
-                multipart: {  // Usamos multipart en lugar de data
-                    payload: JSON.stringify(payload)
-                }
+        const response = await this.api.post(url, {
+            headers,
+            multipart: {
+                payload: JSON.stringify(payload)
             }
-        );
+        });
 
+        await this.logRequestResponse('POST', this.url, headers, payload, response);
        
         return {
             status: response.status(),
