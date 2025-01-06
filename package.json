@@ -6,7 +6,7 @@
   "scripts": {
     "test:ui": "npx playwright test --ui",
     "test": "npx playwright test",
-    "regression:ci": "npx playwright test --workers=1",
+    "regression:ci": "npx playwright test",
     "allure:gen:chrome": "allure generate --clean -o allure-report/chrome",
     "allure": "allure generate --clean",
     "allure:open": "allure generate --clean && allure open --host localhost "

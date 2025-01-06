@@ -1,0 +1,18 @@
+image: mcr.microsoft.com/playwright:v1.40.0-jammy
+
+pipelines:
+  default:
+    - step:
+        name: Run API Tests
+        caches:
+          - node
+        script:
+          - npm ci
+          - npx playwright install chromium
+          - npm run regression:ci
+        env:
+          BASE_URL_: 'https://irsa-dev-backend.wi-soft.net/api/v1'
+          USERNAME: 'asapconsulting'
+          PASSWORD: 'Inicio.2025'
+        artifacts:
+          - allure-report/**  
